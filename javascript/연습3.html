@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STep06_example3.html</title>
+    <style>
+        .container {
+            position: relative;
+            height: 500px; /* 높이를 지정하여 스크롤이 발생하지 않도록 함 */
+        }
+
+        .box{
+            width: 100px;
+            height: 100px;
+            border: 1px solid red;
+            background-color: yellow;
+            cursor: pointer;
+            transition: margin-left 0.4s ease-in-out;
+            position: absolute;
+            bottom: 0; /* 아래로 위치하도록 함 */
+            left: 0; /* 왼쪽으로 위치하도록 함 */
+            margin-left: calc(100px * (var(--index) - 1)); /* 각 박스별로 왼쪽 여백을 적용하여 일렬로 배치 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box" style="--index: 1;">div1</div>
+        <div class="box" style="--index: 2;">div2</div>
+        <div class="box" style="--index: 3;">div3</div>
+        <div class="box" style="--index: 4;">div4</div>
+        <div class="box" style="--index: 5;">div5</div>
+    </div>
+    <script>
+        let isDragging = false;
+        let startPosX, startPosY;
+        let draggedElement;
+
+        for(let i=0; i<5; i++){
+            let mLeft=0;
+            const box = document.querySelectorAll(".box")[i];
+            box.addEventListener("mousedown", (e) => {
+                isDragging = true;
+                startPosX = e.clientX;
+                startPosY = e.clientY;
+                draggedElement = e.target;
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (isDragging) {
+                    const deltaX = e.clientX - startPosX;
+                    const deltaY = e.clientY - startPosY;
+                    const newPosX = draggedElement.offsetLeft + deltaX;
+                    const newPosY = draggedElement.offsetTop + deltaY;
+                    draggedElement.style.left = newPosX + "px";
+                    draggedElement.style.top = newPosY + "px";
+                    startPosX = e.clientX;
+                    startPosY = e.clientY;
+                }
+            });
+
+            document.addEventListener("mouseup", () => {
+                isDragging = false;
+                draggedElement = null;
+            });
+
+            box.addEventListener("click", (e) => { 
+                mLeft=mLeft+100;
+                e.target.style.marginLeft = mLeft+"px";
+            });
+        }
+    </script>
+</body>
+</html>
