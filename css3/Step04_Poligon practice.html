@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step04_Polygon.html</title>
+    <style>
+        .wrapper{
+            perspective: 500px;
+            perspective-origin: 50% 50%;
+            border: 1px dotted green;
+            height: 700px;
+            display: flex;
+            align-items: center;
+        }
+        .poligon{
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            transform-origin: 50% 50%;
+            transition: transform 1s ease-out;
+        }
+        .poligon > div{
+            border: 1px solid red;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 400px;
+            background-color: antiquewhite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 100px;
+            font-weight: bold;
+            opacity: 0.5;
+            backface-visibility: visible;
+        } 
+        .nav{
+            display: flex;
+            justify-content: center;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>3D Polygon 테스트</h3>
+        <div class="wrapper">
+            <div class="poligon"></div>
+        </div>
+        <div class="nav">
+            <button id="leftBtn">&larr;</button>
+            <button id="rightBtn">&rarr;</button>
+        </div>
+    </div>
+    <script>
+        function getAngleNtz(n, width) {
+            var angle = Math.round(360 / n);
+            var tz = Math.round((width / 2) / Math.tan((angle * Math.PI) / (2 * 180)));
+            var obj = {
+                angle: angle,
+                tz: tz
+            };
+            return obj;
+        }
+
+        const n = 10;
+        const width = 400;
+        const obj = getAngleNtz(n, width);
+        let angle = obj.angle;
+        const tz = obj.tz;
+
+        for(let i = 0; i < n; i++){
+            const div = document.createElement("div");
+            div.innerText = i + 1;
+            document.querySelector(".poligon").append(div);
+        }
+
+        document.querySelector(".poligon").style.transform = `translateZ(-${tz}px)`;
+
+        const divs = document.querySelectorAll(".poligon div");
+
+        for(let i = 0; i < divs.length; i++){
+            let rotate = i * angle;
+            divs[i].style.transform = `rotateY(${rotate}deg) translateZ(${tz}px)`;
+        }
+
+        let rY = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+
+        document.querySelector(".poligon").addEventListener("mousedown", (event) => {
+            isDragging = true;
+            dragStartX = event.clientX;
+        });
+
+        document.addEventListener("mousemove", (event) => {
+            if (isDragging) {
+                const dragDistance = event.clientX - dragStartX;
+                const threshold = 50;
+
+                if (dragDistance > threshold) {
+                    rY += angle;
+                    dragStartX = event.clientX;
+                } else if (dragDistance < -threshold) {
+                    rY -= angle;
+                    dragStartX = event.clientX;
+                }
+
+                document.querySelector(".poligon").style.transform = `translateZ(-${tz}px) rotateY(${rY}deg)`;
+            }
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+
+        document.querySelector("#leftBtn").addEventListener("cli123456ck", () => {
+            rY -= angle;
+            document.querySelector(".poligon").style.transform = `translateZ(-${tz}px) rotateY(${rY}deg)`;
+        });
+
+        document.querySelector("#rightBtn").addEventListener("click", () => {
+            rY += angle;
+            document.querySelector(".poligon").style.transform = `translateZ(-${tz}px) rotateY(${rY}deg)`;
+        });
+    </script>    
+</body>
+</html>
